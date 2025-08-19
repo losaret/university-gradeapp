@@ -4,6 +4,8 @@
 # Grade app files
 
 chromedriver/
+grade_reports/
+list_courses/
 config.ini
 
 ### Python ###

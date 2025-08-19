@@ -8,7 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException, InvalidSessionIdException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support import expected_conditions as EC
@@ -25,13 +25,14 @@ GRADE_REPORTS_DIR = os.path.join(current_directory, 'grade_reports')     # Пу�
 EXAM_RESULTS_DIR = os.path.join(current_directory, 'exam_results')       # Путь для загрузки отчетов ExamResult
 DEFAULT_DOWNLOAD_DIR = os.path.join(current_directory, 'Downloads')       # Путь для загрузки еще чего-нибудь
 
-
-
 USERNAME = config['npoo-settings']['USERNAME']
 PASSWORD = config['npoo-settings']['PASSWORD']
 UNI_SLUG = config['npoo-settings']['UNI_SLUG']
 
 ERROR_LIST_COURSES = []
+
+if not os.path.exists(GRADE_REPORTS_DIR):
+    os.makedirs(GRADE_REPORTS_DIR)
 
 def make_web_driver(type_driver: str = 'none'):
     """
@@ -90,6 +91,7 @@ def login(web_driver):
     web_driver.find_element(By.CLASS_NAME, 'auth-form').find_element(By.NAME, 'username').send_keys(USERNAME)
     web_driver.find_element(By.CLASS_NAME, 'auth-form').find_element(By.NAME, 'password').send_keys(PASSWORD)
     web_driver.find_element(By.CLASS_NAME, 'auth-form').find_element(By.TAG_NAME, 'button').click()
+    time.sleep(0.5)
 
 
 def grade_order(course_name: str, w_driver):
@@ -292,7 +294,10 @@ def make_grade_report_order(list_courses):
     driver = make_web_driver()
     login(driver)
     for course in list_courses:
-        grade_order(course, driver)
+        try:
+            grade_order(course, driver)
+        except NoSuchWindowException:
+            raise Exception("Браузер закрыт вручную")
     driver.close()
 
 
@@ -317,7 +322,10 @@ def download_grade_report(list_courses):
     driver = make_web_driver('grade_report')
     login(driver)
     for course in list_courses:
-        grade_download(course, driver)
+        try:
+            grade_download(course, driver)
+        except (NoSuchWindowException, InvalidSessionIdException):
+            raise Exception("Браузер закрыт вручную")
     driver.close()
 
 

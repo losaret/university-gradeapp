@@ -2,10 +2,31 @@ import csv
 import os
 import tkinter as tk
 
-from grade_package.misis_grade2 import make_grade_report_order, download_grade_report
-from tkinter import messagebox 
+from grade_package.misis_grade import make_grade_report_order, download_grade_report
+from tkinter import messagebox
+from tkinter import filedialog
 from grade_package.join_files import create_grade_report
 
+
+def open_file_click(action_type):
+    # Открываем диалоговое окно выбора файла
+    file_path = filedialog.askopenfilename(
+        title="Выберите файл",
+        filetypes=(("Текстовые файлы", "*.csv"), ("Все файлы", "*.*")),
+        initialdir=os.path.join(os.getcwd(), 'list_courses'),
+    )
+    if file_path:  # Если файл выбран (не нажата "Отмена")
+        try: 
+            data = read_csv_to_list(file_path)
+            if action_type == 'make_order':
+                make_grade_report_order(data)
+            else:
+                download_grade_report(data)
+            messagebox.showinfo("Info", "Выгрузки создались!")
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Произошла ошибка: {str(e)}")
+    else:
+        messagebox.showinfo("Info", "Пожалуйста, выберете файл")
 
 delete_csv = False
 def read_csv_to_list(file_path, delimiter=''):
@@ -30,16 +51,8 @@ def on_button_make_grade_click():
     make_grade_report_order(LIST_COURSES)
     messagebox.showinfo("Info", "Выгрузки создались!")
 
-def on_button_make_grade_net_click():
-    make_grade_report_order(LIST_COURSES_NET)
-    messagebox.showinfo("Info", "Выгрузки создались!")
-
 def on_button_download_grade_click():
     download_grade_report(LIST_COURSES)
-    messagebox.showinfo("Info", "Выгрузки скачались!")
-
-def on_button_download_grade_net_click():
-    download_grade_report(LIST_COURSES_NET)
     messagebox.showinfo("Info", "Выгрузки скачались!")
 
 def on_button_create_grade_report_click():
@@ -62,5 +75,4 @@ def on_button_create_grade_report_click():
         except Exception as e:
             messagebox.showerror("Ошибка", f"Произошла ошибка при удалении файлов: {e}")
 
-LIST_COURSES = read_csv_to_list(os.path.join(os.getcwd(), 'list_courses.csv'))
-LIST_COURSES_NET = read_csv_to_list(os.path.join(os.getcwd(), 'list_courses_net.csv'))
+LIST_COURSES = read_csv_to_list(os.path.join(os.getcwd(), 'list_courses/list_courses.csv'))

@@ -1,5 +1,4 @@
 import tkinter as tk
-import tkinter.simpledialog
 import os
 import grade_package.gui_functions as gui
 
@@ -7,6 +6,7 @@ from tkinter import messagebox
 from tkinter import font
 from tkinter.messagebox import showinfo
 from tkinter import ttk
+
 
 class PeachButton(tk.Button):
     PEACH_COLORS = {
@@ -53,7 +53,7 @@ class PeachButton(tk.Button):
 
 root = tk.Tk()
 root.title("Grade app")
-root.geometry("635x260")
+root.geometry("645x260")
 root.configure(bg='#C8DACD')
 
 style = ttk.Style()
@@ -78,13 +78,13 @@ button_make_grade = PeachButton(
     )
 button_make_grade.grid(row=0, column=0, ipadx=6, ipady=6, padx=15, pady=15, sticky="ew")
 
-button_make_grade_net = PeachButton(root, text="Создать выгрузки сетевых курсов", command=gui.on_button_make_grade_net_click)
+button_make_grade_net = PeachButton(root, text="Создать выгрузки курсов из файла", command= lambda: gui.open_file_click("make_order"))
 button_make_grade_net.grid(row=1, column=0, ipadx=6, ipady=6, padx=15, pady=15, sticky="ew")
 
 button_download_grade = PeachButton(root, text="Скачать выгрузки общих курсов", command=gui.on_button_download_grade_click)
 button_download_grade.grid(row=0, column=1, ipadx=6, ipady=6, padx=15, pady=15, sticky="ew")
 
-button_download_grade_net = PeachButton(root, text="Скачать выгрузки сетевых курсов", command=gui.on_button_download_grade_net_click)
+button_download_grade_net = PeachButton(root, text="Скачать выгрузки курсов из файла", command=lambda: gui.open_file_click("download_grade"))
 button_download_grade_net.grid(row=1, column=1, ipadx=6, ipady=6, padx=15, pady=15, sticky="ew")
 
 button_create_grade = PeachButton(root, text="Объединить файлы выгрузок в один", command=gui.on_button_create_grade_report_click)
