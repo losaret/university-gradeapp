@@ -287,7 +287,7 @@ def exam_results_download(course_name: str, w_driver):
 
 def make_grade_report_order(list_courses):
     """
-    Функция создает WebDriver с настрйоками для заказа отчета Grade report, проходит по списку курсов и в каждом
+    Функция создает WebDriver с настройками для заказа отчета Grade report, проходит по списку курсов и в каждом
     из них нажимает на клавишу "Создать отчет" с помощью функции grade_order. Затем
     завершает работу WebDriver.
     """
@@ -296,14 +296,14 @@ def make_grade_report_order(list_courses):
     for course in list_courses:
         try:
             grade_order(course, driver)
-        except NoSuchWindowException:
+        except (NoSuchWindowException, InvalidSessionIdException):
             raise Exception("Браузер закрыт вручную")
     driver.close()
 
 
 def make_exam_results_order(list_courses):
     """
-    Функция создает WebDriver с настрйоками для заказа отчета Grade report, проходит по списку курсов и в каждом
+    Функция создает WebDriver с настройками для заказа отчета Grade report, проходит по списку курсов и в каждом
     из них нажимает на клавишу "Создать отчет наблюдаемых испытаний" с помощью функции order_exam_results. Затем
     завершает работу WebDriver.
     """
@@ -316,7 +316,7 @@ def make_exam_results_order(list_courses):
 
 def download_grade_report(list_courses):
     """
-    Функция создает WebDriver с настрйоками для скачивания отчета Grade report, проходит по списку курсов и в каждом
+    Функция создает WebDriver с настройками для скачивания отчета Grade report, проходит по списку курсов и в каждом
     из них пытается скачать Grade Report с помощью функции grade_download. Затем завершает работу WebDriver.
     """
     driver = make_web_driver('grade_report')
@@ -331,7 +331,7 @@ def download_grade_report(list_courses):
 
 def download_exam_results(list_courses):
     """
-    Функция создает WebDriver с настрйоками для скачивания отчета Exam Results, проходит по списку курсов и в каждом
+    Функция создает WebDriver с настройками для скачивания отчета Exam Results, проходит по списку курсов и в каждом
     из них пытается скачать отчет Exam Results с помощью функции exam_results_download.
     Затем завершает работу WebDriver.
     """

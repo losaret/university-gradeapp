@@ -7,6 +7,7 @@ chromedriver/
 grade_reports/
 list_courses/
 config.ini
+grade_reports.csv
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
