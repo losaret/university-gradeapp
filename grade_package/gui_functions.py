@@ -2,10 +2,10 @@ import csv
 import os
 import tkinter as tk
 
-from grade_package.misis_grade import make_grade_report_order, download_grade_report
+from grade_package.misis_grade import make_grade_report_order, download_grade_report, make_group_allocation
 from tkinter import messagebox
 from tkinter import filedialog
-from grade_package.join_files import create_grade_report
+from grade_package.join_files import create_grade_report, group_allocation_dict
 
 
 def open_file_click(action_type):
@@ -75,4 +75,12 @@ def on_button_create_grade_report_click():
         except Exception as e:
             messagebox.showerror("Ошибка", f"Произошла ошибка при удалении файлов: {e}")
 
+def on_button_make_grade_allocation():
+    email_dict = group_allocation_dict()
+    make_group_allocation(email_dict)
+    messagebox.showinfo("Info", "Студенты распределены!")
+
 LIST_COURSES = read_csv_to_list(os.path.join(os.getcwd(), 'list_courses/list_courses.csv'))
+
+if __name__ == '__main__':
+    on_button_make_grade_allocation()

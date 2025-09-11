@@ -36,3 +36,25 @@ def create_grade_report(report_folder):
     columns_to_drop.remove(all_data.columns.get_loc("Enrollment Track")) 
     all_data = all_data.drop(all_data.columns[columns_to_drop], axis=1)
     all_data.to_csv(os.path.join(os.getcwd(),report_folder + '.csv'), index=False)
+
+def group_allocation_dict():
+    df = pd.read_csv(os.path.join(os.getcwd(),'grade_reports.csv'))
+    #df.info()
+    email_condition = (
+    df['Email'].str.contains('@edu.misis.ru', na=False) | 
+    df['Email'].str.contains('@misis.ru', na=False)
+    )
+    cohort_condition = (
+    (df['Cohort Name'] == 'Default Group') | 
+    (df['Cohort Name'] == 'Группа по умолчанию') | 
+    (df['Cohort Name'] == '')
+    )
+    
+    misis_students = df[email_condition & cohort_condition]
+    misis_students.to_csv(os.path.join(os.getcwd(),'misis_students.csv'), index=False)
+    email_dict = misis_students.groupby('course_name')['Email'].agg(', '.join).to_dict()
+    return email_dict
+    
+
+if __name__ == '__main__':
+    group_allocation_dict()

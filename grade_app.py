@@ -53,7 +53,7 @@ class PeachButton(tk.Button):
 
 root = tk.Tk()
 root.title("Grade app")
-root.geometry("645x260")
+root.geometry("645x320")
 root.configure(bg='#C8DACD')
 
 style = ttk.Style()
@@ -92,5 +92,8 @@ button_create_grade.grid(row=2, column=0, columnspan=2, ipadx=5, ipady=5, pady=1
 
 check_button = ttk.Checkbutton(root, text="Удалить CSV файлы после выполнения", style='TCheckbutton', variable=delete_csv_checkbox, command=checkbutton_changed)
 check_button.grid(row=3, column=0, columnspan=2, ipadx=5, ipady=5, pady=1)
+
+button_create_grade = PeachButton(root, text="Распределить студентов по группе", command=gui.on_button_make_grade_allocation)
+button_create_grade.grid(row=4, column=0, columnspan=2, ipadx=5, ipady=5, pady=1)
 
 root.mainloop()

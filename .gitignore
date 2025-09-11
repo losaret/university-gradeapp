@@ -8,7 +8,7 @@ grade_reports/
 list_courses/
 config.ini
 grade_reports.csv
-
+misis_students.csv
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/

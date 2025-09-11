@@ -15,6 +15,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from tkinter import messagebox
+from selenium.webdriver.support.ui import Select
 
 # Получаем путь до текущей директории
 current_directory = os.getcwd()
@@ -108,18 +109,18 @@ def grade_order(course_name: str, w_driver):
     course_url2 = f'https://courses.openedu.ru/courses/course-v1:{UNI_SLUG}+{course_name}/instructor#view-data_download'
 
     w_driver.get(course_url1)
-    WebDriverWait(w_driver, 60).until(
+    WebDriverWait(w_driver, 120).until(
         expected_conditions.presence_of_element_located((By.CLASS_NAME, 'row.course-outline-tab')))
     time.sleep(0.5)
 
     w_driver.get(course_url2)
     w_driver.execute_script("window.scrollTo(0,1200)")
-    WebDriverWait(w_driver, 60).until(expected_conditions.presence_of_element_located(
+    WebDriverWait(w_driver, 120).until(expected_conditions.presence_of_element_located(
         (By.CLASS_NAME, "file-download-link")))
 
     w_driver.find_element(By.CSS_SELECTOR, "input.async-report-btn:nth-child(1)").click()
 
-    WebDriverWait(w_driver, 60).until(lambda x: expected_conditions.visibility_of_element_located(
+    WebDriverWait(w_driver, 120).until(lambda x: expected_conditions.visibility_of_element_located(
         (By.CSS_SELECTOR, "#report-request-response")) or expected_conditions.visibility_of_element_located(
         (By.CSS_SELECTOR, "#report-request-response-error")))  # Проверка двух условий работает только через lambda
     time.sleep(0.5)
@@ -150,19 +151,19 @@ def order_exam_results(course_name: str, w_driver):
     """
     course_url1 = f'https://apps.openedu.ru/learning/course/course-v1:{UNI_SLUG}+{course_name}/home'
     w_driver.get(course_url1)
-    WebDriverWait(w_driver, 60).until(
+    WebDriverWait(w_driver, 120).until(
         expected_conditions.presence_of_element_located((By.CLASS_NAME, 'row.course-outline-tab')))
     time.sleep(0.5)
 
     course_url2 = f'https://courses.openedu.ru/courses/course-v1:{UNI_SLUG}+{course_name}/instructor#view-data_download'
     w_driver.get(course_url2)
     w_driver.execute_script("window.scrollTo(0,1200)")
-    WebDriverWait(w_driver, 60).until(expected_conditions.presence_of_element_located(
+    WebDriverWait(w_driver, 120).until(expected_conditions.presence_of_element_located(
         (By.CLASS_NAME, "file-download-link")))
     w_driver.execute_script("window.scrollTo(0,500)")
     try:
         w_driver.find_element(By.NAME, "proctored-exam-results-report").click()
-        WebDriverWait(w_driver, 60).until(lambda x: expected_conditions.visibility_of_element_located(
+        WebDriverWait(w_driver, 120).until(lambda x: expected_conditions.visibility_of_element_located(
             (By.CSS_SELECTOR, "#report-request-response")) or expected_conditions.visibility_of_element_located(
             (By.CSS_SELECTOR, "#report-request-response-error")))  # Проверка двух условий работает только через lambda
 
@@ -202,14 +203,14 @@ def grade_download(course_name: str, w_driver):
     tday = str(datetime.date.today().strftime('%d.%m.%Y'))  # сегодняшняя дата для сравнения
 
     w_driver.get(course_url1)
-    WebDriverWait(w_driver, 30).until(
+    WebDriverWait(w_driver, 120).until(
         expected_conditions.presence_of_element_located((By.CLASS_NAME, 'row.course-outline-tab')))
     time.sleep(1)
 
     w_driver.get(course_url2)
     w_driver.execute_script("window.scrollTo(0,1200)")
 
-    WebDriverWait(w_driver, 60).until(expected_conditions.presence_of_element_located(
+    WebDriverWait(w_driver, 120).until(expected_conditions.presence_of_element_located(
         (By.CLASS_NAME, "file-download-link")))
 
     # Поиск строки, где есть grade report
@@ -251,7 +252,7 @@ def exam_results_download(course_name: str, w_driver):
     """
     course_url1 = f'https://apps.openedu.ru/learning/course/course-v1:{UNI_SLUG}+{course_name}/home'
     w_driver.get(course_url1)
-    WebDriverWait(w_driver, 60).until(
+    WebDriverWait(w_driver, 120).until(
         expected_conditions.presence_of_element_located((By.CLASS_NAME, 'row.course-outline-tab')))
     time.sleep(0.5)
 
@@ -260,7 +261,7 @@ def exam_results_download(course_name: str, w_driver):
 
     w_driver.get(course_url2)
     w_driver.execute_script("window.scrollTo(0,1200)")
-    WebDriverWait(w_driver, 60).until(expected_conditions.presence_of_element_located(
+    WebDriverWait(w_driver, 120).until(expected_conditions.presence_of_element_located(
         (By.CLASS_NAME, "file-download-link")))
 
     # Поиск строки, где есть exam results
@@ -285,7 +286,56 @@ def exam_results_download(course_name: str, w_driver):
     w_driver.get('https://openedu.ru/')
 
 
-def make_grade_report_order(list_courses):
+def group_allocation(course_name: str, students: str, w_driver):
+    course_url1 = f'https://apps.openedu.ru/learning/course/course-v1:{UNI_SLUG}+{course_name}+fall_2025/home'
+    course_url2 = f'https://courses.openedu.ru/courses/course-v1:{UNI_SLUG}+{course_name}+fall_2025/instructor#view-cohort_management'
+    w_driver.get(course_url1)
+    WebDriverWait(w_driver, 120).until(
+        expected_conditions.presence_of_element_located((By.CLASS_NAME, 'row.course-outline-tab')))
+    
+    w_driver.get(course_url2)
+    WebDriverWait(w_driver, 120).until(expected_conditions.presence_of_element_located(
+        (By.CLASS_NAME, "cohort-select")))
+    cohort_select = w_driver.find_element(By.CSS_SELECTOR, "#cohort-select")
+    cohort_select.click()
+    time.sleep(1)
+    options = w_driver.find_elements(By.XPATH, "//option[contains(text(), 'МИСИС')]")
+    visible_options = [opt for opt in options if opt.is_displayed()]
+    try:
+        visible_options[0].click()
+    except:
+        all_misis = w_driver.find_elements(
+            By.XPATH, 
+            "//option[contains(text(), 'МИСИС')]"
+        )
+        print(f"Найдено {len(all_misis)} элементов:")
+        for i, element in enumerate(all_misis):
+            print(f"{i+1}. Текст: '{element.text}'")
+            print(f"   Value: {element.get_attribute('value')}")
+            print(f"   HTML: {element.get_attribute('outerHTML')}")
+            print(f"  Видим: {element.is_displayed()}")
+            print("---")
+        
+    w_driver.execute_script("window.scrollTo(0,1200)")
+    w_driver.find_element(By.NAME, 'cohort-management-group-add-students').send_keys(students)
+    time.sleep(1)
+    w_driver.find_element(By.CSS_SELECTOR, 'div.form-actions:nth-child(7) > button:nth-child(1)').click()
+    time.sleep(1)
+    w_driver.get('https://openedu.ru/')
+
+def make_group_allocation(email_dict):
+    driver = make_web_driver()
+    login(driver)
+    print(email_dict)
+    for course, students in email_dict.items():
+        print(course, students)
+        try:
+            group_allocation(course, students, driver)
+        except (NoSuchWindowException, InvalidSessionIdException):
+            raise Exception("Браузер закрыт вручную")
+    driver.close()
+
+def make_grade_report_order(list_courses: list):
     """
     Функция создает WebDriver с настройками для заказа отчета Grade report, проходит по списку курсов и в каждом
     из них нажимает на клавишу "Создать отчет" с помощью функции grade_order. Затем
@@ -301,7 +351,7 @@ def make_grade_report_order(list_courses):
     driver.close()
 
 
-def make_exam_results_order(list_courses):
+def make_exam_results_order(list_courses: list):
     """
     Функция создает WebDriver с настройками для заказа отчета Grade report, проходит по списку курсов и в каждом
     из них нажимает на клавишу "Создать отчет наблюдаемых испытаний" с помощью функции order_exam_results. Затем
